@@ -300,8 +300,8 @@ class Game extends React.Component {
           <div className="col-4">
             <Scoreboard next={this.state.whoIsNext} player={this.state.players[0].color} wins={this.state.players[0].wins} />
           </div>
-          <div className="col-4">
-            <h1>Connect Four</h1>
+          <div className="col-4 title">
+            Connect Four
           </div>
           <div className="col-4">
           <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins} />
@@ -315,7 +315,9 @@ class Game extends React.Component {
             board={current.board}
             onClick={(i) => this.handleClick(i)}
           />
-          <div className="reset-button" onClick={this.reset}></div>
+          <div className="reset-button" onClick={this.reset}>
+            <button></button>
+          </div>
           <div className="undo-button" onClick={this.undo}>Undo</div>
 
           {messageModal}

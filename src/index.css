@@ -7,35 +7,36 @@ body {
 
 .App {
     text-align: center;
-    margin-bottom: 75px;
+    margin-bottom: 100px;
 }
 
 .header {
     margin: 0 auto;
+    background-color: #222;
     text-align: center;
     width: 100%;
-    background-color: #222;
-    height: 150px;
+    height: 25%;
     color: #fff;
 }
 
 .header .col-4 {
-    float: left;
+    display: inline-block;
+    padding: 15px 0;
+    text-align: center;
     width: 33%;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 3em;
 }
 
 .scoreboard {
-    padding: 10px;
     width: 150px;
     border: 1px solid #fff;
     border-radius: 5px;
     text-transform: capitalize;
-    margin-top: 20px;
-    margin-right: 100px;
-}
-
-.scoreboard:first-of-type {
-    float: right;
+    margin: 0 auto;
 }
 
 .scoreboard .wins {
@@ -57,7 +58,7 @@ body {
 
 .game-board {
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 85px;
     background-color: #3A539B;
     width: 750px;
     padding-bottom: 20px;
@@ -104,7 +105,7 @@ body {
     background-color: #3A539B;
     border: 3px solid #4183D7;
     width: 64px;
-    height: 12px;
+    height: 18px;
     margin: 15px auto;
     border-radius: 5px;
     cursor: pointer;
@@ -114,10 +115,14 @@ body {
     text-transform: uppercase;
 }
 
-.reset-button span {
+.reset-button button {
     height: 20px;
     width: 20px;
-    background-color: #fff;
+    float: left;
+    border: none;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+    cursor: pointer;
 }
 
 .reset-button:hover {
