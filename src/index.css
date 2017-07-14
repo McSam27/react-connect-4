@@ -1,4 +1,6 @@
+html,
 body {
+    font-family: 'Montserrat', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #19B5FE;
@@ -90,32 +92,41 @@ body {
 }
 
 .undo-button {
+    margin: 0 auto;
+    width: 80px;
     cursor: pointer;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, .8);
+    color: rgba(255, 255, 255, .7);
+    animation: ease-in-out 1s;
+}
+
+.undo-button:hover {
+    color: rgba(255, 255, 255, 1);
 }
 
 .scoreboard {
     padding: 10px;
-    width: 100px;
+    width: 150px;
     border: 1px solid #fff;
     border-radius: 5px;
+    text-transform: capitalize;
 }
 
-.scoreboard span {
-    text-transform: capitalize;
+.scoreboard .wins {
+    font-family: 'Architects Daughter', cursive;
+    font-size: 24px;
 }
 
 .scoreboard.red {
     color: #f5f5f5;
-    /* background-color: #EF4836; */
     border: 3px solid #D64541;
+    background-color: #EC644B;
 }
 
 .scoreboard.yellow {
     color: #f5f5f5;
-    /* background-color: #F7E900; */
     border: 3px solid #F4D03F;
+    background-color: #F5D76E;
 }
 
 .winner {
@@ -125,6 +136,22 @@ body {
     color: #fff;
 }
 
-.winner span {
-    text-transform: capitalize;
+.message-modal {
+    text-align: center;
+    font-size: 24px;
+    margin: 25px;
+    text-transform: uppercase;
+    line-height: 40px;
+    border-radius: 10px;
+}
+
+.message-modal button {
+    background-color: #3A539B;
+    border: 3px solid #4183D7;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    padding: 8px;
+    text-transform: uppercase;
 }

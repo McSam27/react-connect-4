@@ -3,25 +3,14 @@ import ReactDOM from 'react-dom'; // to gain access to react-dom
 import Modal from 'react-modal';
 import './index.css' // custom styling
 
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
-  }
-};
-
 
 class Scoreboard extends Component {
   render() {
     return (
       <div className={this.props.next !== this.props.player ? 'scoreboard' : 'scoreboard ' + this.props.next}>
-        <span>Player: {this.props.player}</span>
+        Player: {this.props.player}
         <br />
-        <span>Wins: {this.props.wins}</span>
+        Wins: <span className="wins">{this.props.wins}</span>
       </div>
     );
   }
@@ -111,6 +100,21 @@ class Board extends React.Component {
   }
 } // Board class
 
+
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+};
+
+
+
 // game 
 class Game extends React.Component {
   constructor() {
@@ -139,16 +143,28 @@ class Game extends React.Component {
       ],
       whoIsNext: 'red',
       stepNumber: 0,
-      winner: ''
+      message: ''
     };
 
     this.undo = this.undo.bind(this);
     this.reset = this.reset.bind(this);
+    this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
 
+  openModal() {
+    this.setState({ 
+      // message: 'Sorry, you can\'t go there!'
+      isModalOpen: true
+    });
+  }
+
+
   closeModal() {
-    this.setState({ winner: '' });
+    this.setState({ 
+      message: '', 
+      isModalOpen: false 
+    });
   }
 
   handleClick(col) {
@@ -204,8 +220,8 @@ class Game extends React.Component {
           ],
           stepNumber: 0,
           whoIsNext: this.state.whoIsNext === "red" ? "yellow" : "red",
-          winner: winner
-        }));
+          message: winner + ' wins!',
+        }), this.openModal);
       } else { // if no winner, but legal move
         this.setState((prevState => ({
           history: prevState.history.concat({ board }),
@@ -216,7 +232,9 @@ class Game extends React.Component {
 
       // if cell > -1
     } else { // illegal move (col is full)
-      alert("ILLEGAL MOVE");
+      this.setState({
+        message: 'Sorry, you cannot go there.'
+      }, this.openModal);
     }
   } // handleClick(col)
 
@@ -264,21 +282,19 @@ class Game extends React.Component {
   render() {
     const current = this.state.history[this.state.stepNumber];
 
-    let messageModal = null;
-    if (this.state.winner) {
-      messageModal = 
-      <Modal
-        isOpen={this.state.winner === 'red' || this.state.winner === 'yellow'}
-        onAfterOpen={this.afterOpenModal}
-        onRequestClose={this.closeModal}
-        style={customStyles}
-        contentLabel="Game Over"
-      >
-      <div>Player <span>{this.state.winner}</span> wins!</div>
-
-        <button onClick={this.closeModal}>close</button>
-      </Modal>;
-    }
+    let messageModal =
+        <Modal
+          isOpen = { this.state.isModalOpen}
+          onRequestClose = {this.closeModal}
+          style = {customStyles}
+          contentLabel = "Information modal"
+        >
+          <div className="message-modal">
+              <span>{this.state.message}</span>
+              <br/>
+             <button onClick={this.closeModal}>Close</button>
+          </div>
+        </Modal>;
 
     return (
       <div className="App">
@@ -288,7 +304,7 @@ class Game extends React.Component {
           </div>
           <div className="col-4">
             <h1>Connect Four</h1>
-            {this.state.stepNumber}
+            {/* {this.state.stepNumber} */}
           </div>
           <div className="col-4">
             <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins} />
@@ -305,6 +321,7 @@ class Game extends React.Component {
 
           {messageModal}
 
+          <button onClick={this.openModal}>Open Modal</button>
         </div>
 
       </div>
