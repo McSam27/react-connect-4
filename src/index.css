@@ -68,8 +68,8 @@ body {
 .reset-button {
     background-color: #3A539B;
     border: 3px solid #4183D7;
-    width: 74px;
-    height: 24px;
+    width: 64px;
+    height: 12px;
     margin: 15px auto;
     border-radius: 5px;
     cursor: pointer;
@@ -90,6 +90,7 @@ body {
 }
 
 .undo-button {
+    cursor: pointer;
     text-transform: uppercase;
     color: rgba(255, 255, 255, .8);
 }
@@ -99,6 +100,10 @@ body {
     width: 100px;
     border: 1px solid #fff;
     border-radius: 5px;
+}
+
+.scoreboard span {
+    text-transform: capitalize;
 }
 
 .scoreboard.red {
@@ -111,4 +116,15 @@ body {
     color: #f5f5f5;
     /* background-color: #F7E900; */
     border: 3px solid #F4D03F;
+}
+
+.winner {
+    margin: 0 auto;
+    text-align: center;
+    background-color: #000;
+    color: #fff;
+}
+
+.winner span {
+    text-transform: capitalize;
 }

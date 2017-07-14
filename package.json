@@ -5,7 +5,9 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "react": "^15.6.1",
+    "react-addons-update": "^15.6.0",
     "react-dom": "^15.6.1",
+    "react-modal": "^2.2.2",
     "react-scripts": "1.0.9"
   },
   "scripts": {

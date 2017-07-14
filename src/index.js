@@ -1,13 +1,26 @@
 import React, { Component } from 'react'; // gain access to entire react
 import ReactDOM from 'react-dom'; // to gain access to react-dom
+import Modal from 'react-modal';
 import './index.css' // custom styling
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+};
+
 
 class Scoreboard extends Component {
   render() {
     return (
-    <div className={this.props.next !== this.props.player ? 'scoreboard' : 'scoreboard ' + this.props.next}>
+      <div className={this.props.next !== this.props.player ? 'scoreboard' : 'scoreboard ' + this.props.next}>
         <span>Player: {this.props.player}</span>
-        <br/>
+        <br />
         <span>Wins: {this.props.wins}</span>
       </div>
     );
@@ -23,13 +36,12 @@ function Slot(props) {
   );
 }
 
-
 // board class
 class Board extends React.Component {
   renderSlot(i, k) {
     return (
       <Slot
-        value={this.props.boards[i][k]}
+        value={this.props.board[i][k]}
         onClick={() => this.props.onClick(i, k)}
       />
     );
@@ -112,36 +124,41 @@ class Game extends React.Component {
       ['', '', '', '', '', ''],
       ['', '', '', '', '', ''],
     ];
+
     this.state = {
-      history: [
-        {
-          boards: emptyBoard
-        }
-      ],
+      history: [{ board: emptyBoard }],
       players: [
         {
-          color: "red",
+          color: 'red',
           wins: 0
         },
         {
-          color: "yellow",
+          color: 'yellow',
           wins: 0
         }
       ],
-      whoIsNext: "red",
+      whoIsNext: 'red',
       stepNumber: 0,
       winner: ''
     };
+
+    this.undo = this.undo.bind(this);
+    this.reset = this.reset.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  closeModal() {
+    this.setState({ winner: '' });
   }
 
   handleClick(col) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const newBoard = current.boards.slice();
+    const h = JSON.parse(JSON.stringify(this.state.history)); // gets copy of history
+    const current = h[h.length - 1];  // gets current board object
+    let board = current.board.slice(0); // gets current board
     let cell = -1;
 
     // find next available index
-    newBoard[col].forEach((val, index) => {
+    board[col].forEach((val, index) => {
       if (val === '') {
         cell = index;
         return;
@@ -151,108 +168,149 @@ class Game extends React.Component {
     // if positive then perform move
     // else log illegal
     if (cell > -1) {
+
       // set new slot
-      newBoard[col][cell] = this.state.whoIsNext;
+      board[col][cell] = this.state.whoIsNext;
+
       // check if winner
-      if (checkWin(newBoard)) {
-      let winner = this.state.whoIsNext === "red" ? "red" : "yellow";
-        this.setState({
-          history: history.concat([
+      if (checkWin(board)) {
+        let emptyBoard = [
+          ['', '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+        ];
+        let winner = this.state.whoIsNext === "red" ? "red" : "yellow";
+        this.setState((prevState) => ({
+          history: [
             {
-              boards: newBoard
+              board: emptyBoard
             }
-          ]),
+          ],
           players: [
             {
               color: "red",
-              wins: 0
+              wins: (winner === 'red' ? prevState.players[0].wins + 1
+                : prevState.players[0].wins)
             },
             {
               color: "yellow",
-              wins: 0
+              wins: (winner === 'yellow' ? prevState.players[1].wins + 1
+                : prevState.players[1].wins)
             }
           ],
-          stepNumber: history.length,
+          stepNumber: 0,
           whoIsNext: this.state.whoIsNext === "red" ? "yellow" : "red",
-          winner: this.state.whoIsNext === "red" ? "red" : "yellow"
-        }, 
-          () => {
-            
-            alert(this.state.winner);
-          }
-        );
-      } else {
-        this.setState({
-          history: history.concat([
-            {
-              boards: newBoard
-            }
-          ]),
-          stepNumber: history.length,
-          whoIsNext: this.state.whoIsNext === "red" ? "yellow" : "red",
-        });
-      }
-    } else {
-      console.log("ILLEGAL MOVE");
-    }
+          winner: winner
+        }));
+      } else { // if no winner, but legal move
+        this.setState((prevState => ({
+          history: prevState.history.concat({ board }),
+          stepNumber: prevState.stepNumber + 1,
+          whoIsNext: prevState.whoIsNext === "red" ? "yellow" : "red"
+        })));
+      };
 
+      // if cell > -1
+    } else { // illegal move (col is full)
+      alert("ILLEGAL MOVE");
+    }
+  } // handleClick(col)
+
+
+  undo() {
+    let newH;
+    this.setState(prevState => {
+      if (this.state.stepNumber === 0) {
+        alert('no moves to undo!');
+        return;
+      }
+      else {
+        newH = JSON.parse(JSON.stringify(
+          this.state.history.slice(0, this.state.history.length - 1))
+        );
+        console.log(newH);
+      }
+
+      return {
+        history: newH,
+        stepNumber: prevState.stepNumber - 1,
+        whoIsNext: prevState.whoIsNext === "red" ? "yellow" : "red",
+      }
+    });
   }
 
-  // jumpTo(step) {
-  //   this.setState({
-  //     stepNumber: step,
-  //     whoIsNext: (step % 2) === 0
-  //   });
-  // }
+  reset() {
+    let emptyBoard = [
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+    ];
+    this.setState({
+      history: [{ board: emptyBoard }],
+      whoIsNext: 'red',
+      stepNumber: 0,
+      winner: ''
+    });
+  }
 
   render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
+    const current = this.state.history[this.state.stepNumber];
 
-    // const moves = history.map((step, move) => {
-    //   const desc = move ? "Move #" + move : "Game start";
-    //   return (
-    //     <li key={move}>
-    //       <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
-    //     </li>
-    //   );
-    // });
+    let messageModal = null;
+    if (this.state.winner) {
+      messageModal = 
+      <Modal
+        isOpen={this.state.winner === 'red' || this.state.winner === 'yellow'}
+        onAfterOpen={this.afterOpenModal}
+        onRequestClose={this.closeModal}
+        style={customStyles}
+        contentLabel="Game Over"
+      >
+      <div>Player <span>{this.state.winner}</span> wins!</div>
+
+        <button onClick={this.closeModal}>close</button>
+      </Modal>;
+    }
 
     return (
       <div className="App">
         <div className="header">
-
           <div className="col-4">
-            <Scoreboard next={this.state.whoIsNext} player={this.state.players[0].color} wins={this.state.players[0].wins}/>
-            </div>
+            <Scoreboard next={this.state.whoIsNext} player={this.state.players[0].color} wins={this.state.players[0].wins} />
+          </div>
           <div className="col-4">
             <h1>Connect Four</h1>
+            {this.state.stepNumber}
           </div>
           <div className="col-4">
-            <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins}/>
+            <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins} />
           </div>
-
-        </div>
+        </div> {/* header */}
         <div className="clearfix"></div>
         <div className="game-board">
           <Board
-            boards={current.boards}
-            onClick={(i, k) => this.handleClick(i, k)}
+            board={current.board}
+            onClick={(i) => this.handleClick(i)}
           />
-          <div className="reset-button" onClick={this.resetBoard}>
-            <span></span>
-          </div>
-          <div className="undo-button" onClick={this.undo}>Undo</div> 
+          <div className="reset-button" onClick={this.reset}></div>
+          <div className="undo-button" onClick={this.undo}>Undo</div>
+
+          {messageModal}
+
         </div>
+
       </div>
     );
   }
 }
-
-
-
-
-
 
 // ========================================
 
@@ -261,32 +319,32 @@ ReactDOM.render(<Game />, document.getElementById("root"));
 // function to calculate if a player has won
 function checkWin(board) {
   let beginning = 0,
-      midpoint = Math.floor(board.length/2),
-      end_col = board.length - 1,
-      end_row = board[0].length - 1;
+    midpoint = Math.floor(board.length / 2),
+    end_col = board.length - 1,
+    end_row = board[0].length - 1;
 
 
   // diagonal north-east
   for (var c = beginning; c <= midpoint; c++) {
-    for(var r = end_row; r >= midpoint; r--) {
-      if(
+    for (var r = end_row; r >= midpoint; r--) {
+      if (
         board[c][r] !== "" &&
-        board[c][r] === board[c+1][r-1] &&
-        board[c][r] === board[c+2][r-2] &&
-        board[c][r] === board[c+3][r-3]   ) {
+        board[c][r] === board[c + 1][r - 1] &&
+        board[c][r] === board[c + 2][r - 2] &&
+        board[c][r] === board[c + 3][r - 3]) {
         return true;
       }
     }
   }
-  
+
   // diagonal north-west
   for (c = end_col; c >= midpoint; c--) {
-    for(r = end_row; r >= midpoint; r--) {
-      if(
+    for (r = end_row; r >= midpoint; r--) {
+      if (
         board[c][r] !== "" &&
-        board[c][r] === board[c-1][r-1] &&
-        board[c][r] === board[c-2][r-2] &&
-        board[c][r] === board[c-3][r-3]   ) {
+        board[c][r] === board[c - 1][r - 1] &&
+        board[c][r] === board[c - 2][r - 2] &&
+        board[c][r] === board[c - 3][r - 3]) {
         return true;
       }
     }
@@ -294,25 +352,25 @@ function checkWin(board) {
 
   // vertical
   for (c = beginning; c <= end_col; c++) {
-    for(r = end_row; r >= midpoint; r--) {
-      if(board[c][r] !== "" &&
-        board[c][r] === board[c][r-1] &&
-        board[c][r] === board[c][r-2] &&
-        board[c][r] === board[c][r-3]) {
-          return true;
-       }
+    for (r = end_row; r >= midpoint; r--) {
+      if (board[c][r] !== "" &&
+        board[c][r] === board[c][r - 1] &&
+        board[c][r] === board[c][r - 2] &&
+        board[c][r] === board[c][r - 3]) {
+        return true;
+      }
     }
   }
 
   // horizontal
   for (c = beginning; c <= midpoint; c++) {
-    for(r = end_row; r >= beginning; r--) {
-      if(board[c][r] !== "" &&
-        board[c][r] === board[c+1][r] &&
-        board[c][r] === board[c+2][r] &&
-        board[c][r] === board[c+3][r]) {
-          return true;
-      }    
+    for (r = end_row; r >= beginning; r--) {
+      if (board[c][r] !== "" &&
+        board[c][r] === board[c + 1][r] &&
+        board[c][r] === board[c + 2][r] &&
+        board[c][r] === board[c + 3][r]) {
+        return true;
+      }
     }
   }
 
