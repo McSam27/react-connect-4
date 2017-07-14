@@ -153,17 +153,16 @@ class Game extends React.Component {
   }
 
   openModal() {
-    this.setState({ 
-      // message: 'Sorry, you can\'t go there!'
+    this.setState({
       isModalOpen: true
     });
   }
 
 
   closeModal() {
-    this.setState({ 
-      message: '', 
-      isModalOpen: false 
+    this.setState({
+      message: '',
+      isModalOpen: false
     });
   }
 
@@ -233,7 +232,7 @@ class Game extends React.Component {
       // if cell > -1
     } else { // illegal move (col is full)
       this.setState({
-        message: 'Sorry, you cannot go there.'
+        message: 'Sorry, but you cannot go there.'
       }, this.openModal);
     }
   } // handleClick(col)
@@ -250,7 +249,6 @@ class Game extends React.Component {
         newH = JSON.parse(JSON.stringify(
           this.state.history.slice(0, this.state.history.length - 1))
         );
-        console.log(newH);
       }
 
       return {
@@ -283,18 +281,18 @@ class Game extends React.Component {
     const current = this.state.history[this.state.stepNumber];
 
     let messageModal =
-        <Modal
-          isOpen = { this.state.isModalOpen}
-          onRequestClose = {this.closeModal}
-          style = {customStyles}
-          contentLabel = "Information modal"
-        >
-          <div className="message-modal">
-              <span>{this.state.message}</span>
-              <br/>
-             <button onClick={this.closeModal}>Close</button>
-          </div>
-        </Modal>;
+      <Modal
+        isOpen={this.state.isModalOpen}
+        onRequestClose={this.closeModal}
+        style={customStyles}
+        contentLabel="Information modal"
+      >
+        <div className="message-modal">
+          <span>{this.state.message}</span>
+          <br />
+          <button onClick={this.closeModal}>Close</button>
+        </div>
+      </Modal>;
 
     return (
       <div className="App">
@@ -304,13 +302,14 @@ class Game extends React.Component {
           </div>
           <div className="col-4">
             <h1>Connect Four</h1>
-            {/* {this.state.stepNumber} */}
           </div>
           <div className="col-4">
-            <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins} />
+          <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins} />
           </div>
         </div> {/* header */}
         <div className="clearfix"></div>
+        {/* <div className="next-piece"></div> */}
+
         <div className="game-board">
           <Board
             board={current.board}
@@ -321,7 +320,7 @@ class Game extends React.Component {
 
           {messageModal}
 
-          <button onClick={this.openModal}>Open Modal</button>
+          {/* <button onClick={this.openModal}>Open Modal</button> */}
         </div>
 
       </div>
