@@ -1,13 +1,18 @@
-import React, { Component } from 'react'; // gain access to entire react
-import ReactDOM from 'react-dom'; // to gain access to react-dom
-import Modal from 'react-modal';
-import './index.css' // custom styling
-
+import React, { Component } from "react"; // gain access to entire react
+import ReactDOM from "react-dom"; // to gain access to react-dom
+import Modal from "react-modal";
+import "./index.css"; // custom styling
 
 class Scoreboard extends Component {
   render() {
     return (
-      <div className={this.props.next !== this.props.player ? 'scoreboard' : 'scoreboard ' + this.props.next}>
+      <div
+        className={
+          this.props.next !== this.props.player
+            ? "scoreboard"
+            : "scoreboard " + this.props.next
+        }
+      >
         Player: {this.props.player}
         <br />
         Wins: <span className="wins">{this.props.wins}</span>
@@ -19,9 +24,11 @@ class Scoreboard extends Component {
 function Slot(props) {
   return (
     <button
-      className={props.value === '' ? 'game-piece' : 'game-piece ' + props.value}
-      onClick={props.onClick}>
-    </button>
+      className={
+        props.value === "" ? "game-piece" : "game-piece " + props.value
+      }
+      onClick={props.onClick}
+    />
   );
 }
 
@@ -100,50 +107,46 @@ class Board extends React.Component {
   }
 } // Board class
 
-
-
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
   }
 };
 
-
-
-// game 
+// game
 class Game extends React.Component {
   constructor() {
     super();
     let emptyBoard = [
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""]
     ];
 
     this.state = {
       history: [{ board: emptyBoard }],
       players: [
         {
-          color: 'red',
+          color: "red",
           wins: 0
         },
         {
-          color: 'yellow',
+          color: "yellow",
           wins: 0
         }
       ],
-      whoIsNext: 'red',
+      whoIsNext: "red",
       stepNumber: 0,
-      message: ''
+      message: ""
     };
 
     this.undo = this.undo.bind(this);
@@ -158,48 +161,28 @@ class Game extends React.Component {
     });
   }
 
-
   closeModal() {
     this.setState({
-      message: '',
+      message: "",
       isModalOpen: false
     });
   }
 
   handleClick(col) {
-    const h = JSON.parse(JSON.stringify(this.state.history)); // gets copy of history
-    const current = h[h.length - 1];  // gets current board object
-    let board = current.board.slice(0); // gets current board
-    let cell = -1;
+    let emptyBoard = [
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""]
+    ];
 
-    // find next available index
-    board[col].forEach((val, index) => {
-      if (val === '') {
-        cell = index;
-        return;
-      }
-    });
-
-    // if positive then perform move
-    // else log illegal
-    if (cell > -1) {
-
-      // set new slot
-      board[col][cell] = this.state.whoIsNext;
-
-      // check if winner
-      if (checkWin(board)) {
-        let emptyBoard = [
-          ['', '', '', '', '', ''],
-          ['', '', '', '', '', ''],
-          ['', '', '', '', '', ''],
-          ['', '', '', '', '', ''],
-          ['', '', '', '', '', ''],
-          ['', '', '', '', '', ''],
-          ['', '', '', '', '', ''],
-        ];
-        let winner = this.state.whoIsNext === "red" ? "red" : "yellow";
-        this.setState((prevState) => ({
+    // look for a tie game,
+    if (this.state.stepNumber > 41) {
+      this.setState(
+        prevState => ({
           history: [
             {
               board: emptyBoard
@@ -208,79 +191,140 @@ class Game extends React.Component {
           players: [
             {
               color: "red",
-              wins: (winner === 'red' ? prevState.players[0].wins + 1
-                : prevState.players[0].wins)
+              wins: prevState.players[0].wins
+                
             },
             {
               color: "yellow",
-              wins: (winner === 'yellow' ? prevState.players[1].wins + 1
-                : prevState.players[1].wins)
+              wins: prevState.players[1].wins
             }
           ],
           stepNumber: 0,
           whoIsNext: this.state.whoIsNext === "red" ? "yellow" : "red",
-          message: winner + ' wins!',
-        }), this.openModal);
-      } else { // if no winner, but legal move
-        this.setState((prevState => ({
+          message: "Uh oh! Looks like a tie game!"
+        }),
+        this.openModal
+      );
+      return;
+    }
+
+    const h = JSON.parse(JSON.stringify(this.state.history)); // gets copy of history
+    const current = h[h.length - 1]; // gets current board object
+    let board = current.board.slice(0); // gets current board
+    let cell = -1;
+
+    // find next available index
+    board[col].forEach((val, index) => {
+      if (val === "") {
+        cell = index;
+        return;
+      }
+    });
+
+    // if positive then perform move
+    // else log illegal
+    if (cell > -1) {
+      // set new slot
+      board[col][cell] = this.state.whoIsNext;
+
+      // check if winner
+      if (checkWin(board)) {
+        let winner = this.state.whoIsNext === "red" ? "red" : "yellow";
+        this.setState(
+          prevState => ({
+            history: [
+              {
+                board: emptyBoard
+              }
+            ],
+            players: [
+              {
+                color: "red",
+                wins:
+                  winner === "red"
+                    ? prevState.players[0].wins + 1
+                    : prevState.players[0].wins
+              },
+              {
+                color: "yellow",
+                wins:
+                  winner === "yellow"
+                    ? prevState.players[1].wins + 1
+                    : prevState.players[1].wins
+              }
+            ],
+            stepNumber: 0,
+            whoIsNext: this.state.whoIsNext === "red" ? "yellow" : "red",
+            message: winner + " wins!"
+          }),
+          this.openModal
+        );
+      } else {
+        // if no winner, but legal move
+        this.setState(prevState => ({
           history: prevState.history.concat({ board }),
           stepNumber: prevState.stepNumber + 1,
           whoIsNext: prevState.whoIsNext === "red" ? "yellow" : "red"
-        })));
-      };
+        }));
+      }
 
       // if cell > -1
-    } else { // illegal move (col is full)
-      this.setState({
-        message: 'Sorry, but you cannot go there.'
-      }, this.openModal);
+    } else {
+      // illegal move (col is full)
+      this.setState(
+        {
+          message: "Sorry, but you cannot go there."
+        },
+        this.openModal
+      );
     }
   } // handleClick(col)
-
 
   undo() {
     let newH;
     this.setState(prevState => {
       if (this.state.stepNumber === 0) {
-        alert('no moves to undo!');
-        return;
-      }
-      else {
-        newH = JSON.parse(JSON.stringify(
-          this.state.history.slice(0, this.state.history.length - 1))
+        return {
+          message: "No moves to undo!"
+        };
+      } else {
+        newH = JSON.parse(
+          JSON.stringify(
+            this.state.history.slice(0, this.state.history.length - 1)
+          )
         );
       }
 
       return {
         history: newH,
         stepNumber: prevState.stepNumber - 1,
-        whoIsNext: prevState.whoIsNext === "red" ? "yellow" : "red",
-      }
+        whoIsNext: prevState.whoIsNext === "red" ? "yellow" : "red"
+      };
     });
   }
 
   reset() {
     let emptyBoard = [
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
-      ['', '', '', '', '', ''],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""]
     ];
     this.setState({
       history: [{ board: emptyBoard }],
-      whoIsNext: 'red',
+      whoIsNext: "red",
       stepNumber: 0,
-      winner: ''
+      winner: ""
     });
   }
 
   render() {
     const current = this.state.history[this.state.stepNumber];
 
-    let messageModal =
+    let messageModal = (
       <Modal
         isOpen={this.state.isModalOpen}
         onRequestClose={this.closeModal}
@@ -288,43 +332,50 @@ class Game extends React.Component {
         contentLabel="Information modal"
       >
         <div className="message-modal">
-          <span>{this.state.message}</span>
+          <span>
+            {this.state.message}
+          </span>
           <br />
           <button onClick={this.closeModal}>Close</button>
         </div>
-      </Modal>;
+      </Modal>
+    );
 
     return (
       <div className="App">
         <div className="header">
           <div className="col-4">
-            <Scoreboard next={this.state.whoIsNext} player={this.state.players[0].color} wins={this.state.players[0].wins} />
+            <Scoreboard
+              next={this.state.whoIsNext}
+              player={this.state.players[0].color}
+              wins={this.state.players[0].wins}
+            />
           </div>
-          <div className="col-4 title">
-            Connect Four
-          </div>
+          <div className="col-4 title">Connect Four</div>
           <div className="col-4">
-          <Scoreboard next={this.state.whoIsNext} player={this.state.players[1].color} wins={this.state.players[1].wins} />
+            <Scoreboard
+              next={this.state.whoIsNext}
+              player={this.state.players[1].color}
+              wins={this.state.players[1].wins}
+            />
           </div>
-        </div> {/* header */}
-        <div className="clearfix"></div>
+        </div>{" "}
+        {/* header */}
+        <div className="clearfix" />
         {/* <div className="next-piece"></div> */}
-
         <div className="game-board">
-          <Board
-            board={current.board}
-            onClick={(i) => this.handleClick(i)}
-          />
+          <Board board={current.board} onClick={i => this.handleClick(i)} />
           <div className="reset-button" onClick={this.reset}>
-            <button></button>
+            <button />
           </div>
-          <div className="undo-button" onClick={this.undo}>Undo</div>
+          <div className="undo-button" onClick={this.undo}>
+            Undo
+          </div>
 
           {messageModal}
 
           {/* <button onClick={this.openModal}>Open Modal</button> */}
         </div>
-
       </div>
     );
   }
@@ -340,7 +391,6 @@ function checkWin(board) {
     midpoint = Math.floor(board.length / 2),
     end_col = board.length - 1,
     end_row = board[0].length - 1;
-
 
   // diagonal north-east
   for (var c = beginning; c <= midpoint; c++) {
