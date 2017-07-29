@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
+[Imgur](http://i.imgur.com/ZahdOs3b.png)
+
 ### Description
 This is a simple implementation of the popular game, Connect 4 using React.js. I'm still learning the library, and will gladly take any reccommendations or suggestions.
 
