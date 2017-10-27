@@ -1,0 +1,25 @@
+.scoreboard {
+  width: 150px;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  text-transform: capitalize;
+  padding: 8px;
+  margin: 0 auto;
+}
+
+.scoreboard .wins {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 24px;
+}
+
+.scoreboard.red {
+  color: #f5f5f5;
+  border: 3px solid #D64541;
+  background-color: #EC644B;
+}
+
+.scoreboard.yellow {
+  color: #000000;
+  border: 3px solid #F4D03F;
+  background-color: #F5D76E;
+}

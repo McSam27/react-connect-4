@@ -1,0 +1,19 @@
+.game-piece {
+  margin: 15px auto;
+  background-color: #19B5FE;
+  border: 3px solid #4183D7;
+  border-radius: 50%;
+  width: 69px;
+  height: 69px;
+  cursor: pointer;
+}
+
+.red {
+  background-color: #EF4836;
+  border: 3px solid #D64541;
+}
+
+.yellow {
+  background-color: #F7E900;
+  border: 3px solid #F4D03F;
+}

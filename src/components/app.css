@@ -31,34 +31,9 @@ body {
     font-size: 3em;
 }
 
-.scoreboard {
-    width: 150px;
-    border: 1px solid #fff;
-    border-radius: 5px;
-    text-transform: capitalize;
-    margin: 0 auto;
-}
-
-.scoreboard .wins {
-    font-family: 'Architects Daughter', cursive;
-    font-size: 24px;
-}
-
-.scoreboard.red {
-    color: #f5f5f5;
-    border: 3px solid #D64541;
-    background-color: #EC644B;
-}
-
-.scoreboard.yellow {
-    color: #000000;
-    border: 3px solid #F4D03F;
-    background-color: #F5D76E;
-}
-
 .game-board {
     margin: 0 auto;
-    margin-top: 85px;
+    margin-top: 10px;
     background-color: #3A539B;
     width: 750px;
     padding-bottom: 20px;
@@ -71,34 +46,23 @@ body {
     width: 100px;
 }
 
+.next-piece--holder {
+    width: 750px;
+}
+
 .next-piece {
     margin-top: 10px;
-    background-color: #19B5FE;
-    border: 3px solid #4183D7;
     border-radius: 50%;
     width: 69px;
     height: 69px;
     cursor: pointer;
+    position: relative;
+    transition: all .15s;
 }
 
-.game-piece {
-    margin: 15px auto;
-    background-color: #19B5FE;
-    border: 3px solid #4183D7;
-    border-radius: 50%;
-    width: 69px;
-    height: 69px;
-    cursor: pointer;
-}
-
-.red {
-    background-color: #EF4836;
-    border: 3px solid #D64541;
-}
-
-.yellow {
-    background-color: #F7E900;
-    border: 3px solid #F4D03F;
+.next-piece.red,
+.next-piece.yellow {
+    cursor:default;
 }
 
 .reset-button {
@@ -115,7 +79,11 @@ body {
     text-transform: uppercase;
 }
 
-.reset-button button {
+.reset-button:hover {
+    background-color: #3E5596;
+}
+
+.reset-button span {
     height: 20px;
     width: 20px;
     float: left;
@@ -123,10 +91,13 @@ body {
     border-radius: 3px;
     background-color: #f5f5f5;
     cursor: pointer;
+    position: relative;
+    transition: all .15s ease;
 }
 
-.reset-button:hover {
-    background-color: #19B5FE;
+.reset-button:active span{
+    transform: translateX(45px);
+
 }
 
 .undo-button {
@@ -135,7 +106,6 @@ body {
     cursor: pointer;
     text-transform: uppercase;
     color: rgba(255, 255, 255, .7);
-    animation: ease-in-out 1s;
 }
 
 .undo-button:hover {
@@ -160,10 +130,13 @@ body {
 
 .message-modal button {
     background-color: #3A539B;
-    border: 3px solid #4183D7;
+    width: 100px;
+    height: 40px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+    font-size: 14px;
     color: #fff;
     padding: 8px;
     text-transform: uppercase;
