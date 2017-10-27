@@ -7,13 +7,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ### Description
 This is a simple implementation of the popular game, Connect 4 using React.js. I'm still learning the library, and will gladly take any reccommendations or suggestions.
 
-### Dependencies
-Please look at the package.json and/or yarn.lock files for this project's dependencies.
-
 ### Build and run commands
 
 ```bash
-yarn add      ||      npm install
+yarn	      ||      npm install
 yarn start    ||      npm start
 ```
 
